@@ -20,10 +20,9 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
 
-            $table->string('role')->nullable();           // Developer, Manager, QA, etc.
+            $table->enum('role', ['developer', 'manager', 'qa'])->nullable();
             $table->date('assigned_at')->nullable();
             $table->date('ended_at')->nullable();
-            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
             $table->primary(['project_id', 'user_id']);
         });

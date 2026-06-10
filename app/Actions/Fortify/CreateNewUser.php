@@ -23,15 +23,25 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+
+            'project_id' => ['required', 'exists:projects,id'],
+            'project_role' => ['required', 'in:developer,manager,qa'],
+
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            // 'id_number' => $this->generateIDNumber(),
         ]);
+
+        $user->projects()->attach($input['project_id'], [
+            'role' => $input['project_role'],
+            'assigned_at' => now(),
+        ]);
+
+        return $user;
     }
 
     /*
