@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('id_number')->unique()->nullable();
             $table->string('role')->default('user');
+            $table->boolean('is_manager')->default(false);
             $table->timestamp('last_seen')->nullable();
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();

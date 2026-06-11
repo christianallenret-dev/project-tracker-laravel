@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Gate::define('manage-tasks', function (User $user) {
+            return (bool) $user->is_manager;
+        });
+
+        // Share projects with registration view
+        view()->composer('auth.register', function ($view) {
+            $view->with('projects', \App\Models\Project::all());
+        });
     }
 }

@@ -26,6 +26,8 @@ class CreateNewUser implements CreatesNewUsers
 
             'project_id' => ['required', 'exists:projects,id'],
             'project_role' => ['required', 'in:developer,manager,qa'],
+            'assigned_at' => ['nullable', 'date'],
+            'ended_at' => ['nullable', 'date', 'after_or_equal:assigned_at'],
 
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
@@ -38,7 +40,8 @@ class CreateNewUser implements CreatesNewUsers
 
         $user->projects()->attach($input['project_id'], [
             'role' => $input['project_role'],
-            'assigned_at' => now(),
+            'assigned_at' => $input['assigned_at'] ?? now()->format('Y-m-d'),
+            'ended_at' => $input['ended_at'] ?? null,
         ]);
 
         return $user;
