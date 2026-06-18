@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
     {
         // Create a default test user + 10 additional users
         User::factory()->create([
-            'name'  => 'Test User',
+            'name' => 'Test User',
             'email' => 'test@example.com',
             'is_manager' => true,
         ]);
 
-        User::factory(10)->create();
+        User::factory(20)->create();
 
         // Seed projects first (tasks depend on projects)
         $this->call([

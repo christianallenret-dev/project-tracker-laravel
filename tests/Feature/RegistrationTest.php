@@ -20,11 +20,16 @@ test('registration screen cannot be rendered if support is disabled', function (
 }, 'Registration support is enabled.');
 
 test('new users can register', function () {
+    $project = \App\Models\Project::factory()->create();
+
     $response = $this->post('/register', [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
+        'project_id' => $project->id,
+        'project_role' => 'developer',
+        'assigned_at' => now()->format('Y-m-d'),
         'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature(),
     ]);
 

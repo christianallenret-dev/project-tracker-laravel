@@ -15,6 +15,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::withCount(['users', 'tasks'])->paginate(10);
+
         return view('projects.index', compact('projects'));
     }
 
@@ -25,6 +26,7 @@ class ProjectController extends Controller
     {
         Gate::authorize('manage-tasks');
         $users = User::all();
+
         return view('projects.create', compact('users'));
     }
 
@@ -45,7 +47,7 @@ class ProjectController extends Controller
         ]);
 
         $project = Project::create($validated);
-        
+
         if ($request->has('users')) {
             $project->users()->sync($request->input('users'));
         }
@@ -59,6 +61,7 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $project->load(['users', 'tasks.assignee']);
+
         return view('projects.show', compact('project'));
     }
 
@@ -70,6 +73,7 @@ class ProjectController extends Controller
         Gate::authorize('manage-tasks');
         $users = User::all();
         $project->load('users');
+
         return view('projects.edit', compact('project', 'users'));
     }
 
@@ -90,7 +94,7 @@ class ProjectController extends Controller
         ]);
 
         $project->update($validated);
-        
+
         $project->users()->sync($request->input('users', []));
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
@@ -103,6 +107,7 @@ class ProjectController extends Controller
     {
         Gate::authorize('manage-tasks');
         $project->delete();
+
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
 }
